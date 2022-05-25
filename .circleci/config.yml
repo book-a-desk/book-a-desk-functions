@@ -1,13 +1,260 @@
+# Usage Notes
+# Add the following environment variables to your CircleCI project:
+
+## Book A Desk (Platform)
+
+# Note: These are provided by the aws-credentials context
+# - AWS_REGION
+
+# Note: These are provided by the book-a-desk context
+# - BOOK_A_DESK_BASE_API_URL_DEV
+# - AWS_ECR_ACCOUNT_URL_DEV
+
 version: 2.1
 
-jobs:
-  build:
-    docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD
+workflows:
+  pull-request:
+    unless:
+      equal: ["trunk", << pipeline.git.branch >>]
+    jobs:
+      - build_and_test
+      - build_image:
+          requires:
+            - build_and_test
 
+  production:
+    when:
+      equal: ["trunk", << pipeline.git.branch >>]
+    jobs:
+      - build_and_test
+      - build_image:
+          requires:
+            - build_and_test
+      - push-image:
+          name: push-image-to-dev
+          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_DEV}
+          authenticate-aws:
+            - authenticate-aws-book-a-desk-dev
+          context:
+            - aws-credentials
+            - book-a-desk
+          requires:
+            - build_image
+      - deploy:
+          name: deploy-to-dev
+          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_DEV}
+          authenticate-aws:
+            - authenticate-aws-book-a-desk-dev
+          aws-key-id-secret-id: ${AWS_ACCESS_KEY_ID_SECRET_DEV}
+          aws-secret-key-secret-id: ${AWS_SECRET_ACCESS_KEY_SECRET_DEV}
+          stack-name: << pipeline.parameters.stack-name >>
+          cloudformation-role: << pipeline.parameters.cloudformation-role-dev >>
+          context:
+            - aws-credentials
+          requires:
+            - push-image-to-dev
+      - push-image:
+          name: push-image-to-test
+          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_TEST}
+          authenticate-aws:
+            - authenticate-aws-book-a-desk-test
+          context:
+            - aws-credentials
+            - book-a-desk
+          requires:
+            - deploy-to-dev
+      - deploy:
+          name: deploy-to-test
+          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_TEST}
+          authenticate-aws:
+            - authenticate-aws-book-a-desk-test
+          stack-name: << pipeline.parameters.stack-name >>
+          cloudformation-role: << pipeline.parameters.cloudformation-role-test >>
+          context:
+            - aws-credentials
+            - book-a-desk
+          requires:
+            - push-image-to-test
+      - production-gate:
+          type:
+            approval
+          requires:
+            - deploy-to-test
+      - push-image:
+          name: push-image-to-prod
+          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_PROD}
+          authenticate-aws:
+            - authenticate-aws-book-a-desk-prod
+          context:
+            - aws-credentials
+            - book-a-desk
+          requires:
+            - production-gate
+      - deploy:
+          name: deploy-to-prod
+          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_PROD}
+          authenticate-aws:
+            - authenticate-aws-book-a-desk-prod
+          stack-name: << pipeline.parameters.stack-name >>
+          cloudformation-role: << pipeline.parameters.cloudformation-role-prod >>
+          context:
+            - aws-credentials
+            - book-a-desk
+          requires:
+            - push-image-to-prod
+
+parameters:
+  docker-repo:
+    type: string
+    default: book-a-desk
+  docker-img-version:
+    type: string
+    default: "build-<< pipeline.number >>"
+  docker-tar-filename:
+    type: string
+    default: "book-a-desk_latest.tar"
+  cloudformation-role-dev:
+    type: string
+    default: arn:aws:iam::${AWS_ACCOUNT_DEV}:role/cloudformationstackbackenddev
+  cloudformation-role-test:
+    type: string
+    default: arn:aws:iam::${AWS_ACCOUNT_TEST}:role/cloudformationstackbackendtest
+  cloudformation-role-prod:
+    type: string
+    default: arn:aws:iam::${AWS_ACCOUNT_PROD}:role/cloudformationstackbackendprod
+  stack-name:
+    type: string
+    default: book-a-desk-backend
+    
+commands:
+  push-to-ecr:
+    parameters:
+      ecr-account-url:
+        type: string
+    steps:
+      - run:
+          name: Load Docker image
+          command: docker load -i ./<< pipeline.parameters.docker-tar-filename >>
+      - run:
+          name: Tag Docker image for ECR
+          command: |
+            docker tag \
+              << pipeline.parameters.docker-repo >>:<< pipeline.parameters.docker-img-version >> \
+              "<< parameters.ecr-account-url >>/<< pipeline.parameters.docker-repo >>:<< pipeline.parameters.docker-img-version >>"
+      - run:
+          name: Docker login
+          command: aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin << parameters.ecr-account-url >>
+      - run:
+          name: Push Docker image
+          command: |
+            docker push "<< parameters.ecr-account-url >>/<< pipeline.parameters.docker-repo >>:<< pipeline.parameters.docker-img-version >>"
+  aws-cloudformation-deploy:
+    parameters:
+      image-uri:
+        type: string
+      stack-name:
+        type: string
+      cloudformation-role:
+        type: string
+      docker-repo:
+        type: string
+    steps:
+      - run:
+          name: Ensure infrastructure is up to date
+          command: |
+            aws cloudformation deploy \
+            --parameter-overrides "ImageUri=<< parameters.ecr-account-url >>/<< parameters.docker-repo >>/build-<< pipeline.number >>" \
+            --stack-name << parameters.stack-name >> \
+            --template-file ./infra/lambda.yaml \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --role-arn << parameters.cloudformation-role >>
+jobs:
+  build_and_test:
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:6.0-alpine
     steps:
       - checkout
-      - run: dotnet build
+      - run:
+          name: Build
+          command: dotnet build
+#      - run:
+#          name: Run unit tests
+#          command: |
+#            dotnet test \
+#            --verbosity normal \
+#            --filter "FullyQualifiedName~Tests" \
+#            --results-directory ./tests/unit/results \
+#            --logger "trx"
+#      - publish-test-results:
+#          path: ./tests/unit/results
+
+  build_image:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t << pipeline.parameters.docker-repo >>:<< pipeline.parameters.docker-img-version >> \
+              --build-arg AWSREGION=$AWS_REGION --build-arg AWS_DEVELOPMENTSTORAGE=false .
+      - run:
+          name: Save Docker image
+          command: |
+            docker save \
+              -o << pipeline.parameters.docker-tar-filename >> \
+              << pipeline.parameters.docker-repo >>:<< pipeline.parameters.docker-img-version >>
+      - persist_to_workspace:
+          root: .
+          paths:
+            - << pipeline.parameters.docker-tar-filename >>
+
+  push-image:
+    machine:
+      image: ubuntu-2004:202201-02
+    parameters:
+      ecr-account-url:
+        type: string
+      aws-account-id:
+        type: string
+      authenticate-aws:
+        type: steps
+    steps:
+      - attach_workspace:
+          at: ./
+      - steps: << parameters.authenticate-aws >>
+      - log-aws-identity
+      - aws-cli/setup:
+          aws-region: AWS_REGION
+      - push-to-ecr:
+          ecr-account-url: << parameters.ecr-account-url >>
+          aws-account-id: << parameters.aws-account-id >>
+
+  deploy:
+    machine:
+      image: ubuntu-2004:202201-02
+    parameters:
+      ecr-account-url:
+        type: string
+      repo:
+        type: string
+      aws-account-id:
+        type: string
+      authenticate-aws:
+        type: steps
+      stack-name:
+        type: string
+      cloudformation-role:
+        type: string
+    steps:
+      - checkout
+      - steps: << parameters.authenticate-aws >>
+      - log-aws-identity
+      - aws-cli/setup:
+          aws-region: AWS_REGION
+      - aws-cloudformation-deploy:
+          ecr-account-url: << parameters.ecr-account-url >>
+          stack-name: << parameters.stack-name >>
+          cloudformation-role: << parameters.cloudformation-role >>
