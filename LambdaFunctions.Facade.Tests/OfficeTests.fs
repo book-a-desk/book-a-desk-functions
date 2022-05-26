@@ -1,4 +1,4 @@
-﻿module LambdaFunctions.Facade.Tests
+﻿module LambdaFunctions.Tests.OfficeTests
 
 open System
 open Xunit
@@ -43,6 +43,7 @@ type CityName = CityName of string
         ]
         
 [<Fact>]
-let ``Given an office When retrieving an office Then returns office Id`` () =
+let ``Given a list of offices When retrieving an office Then returns office Id`` () =
     let offices = Offices.All
+    
     

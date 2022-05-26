@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <Compile Include="OfficeTests.fs" />
+        <Compile Include="OfficeRestrictionsTests.fs" />
     </ItemGroup>
 
     <ItemGroup>
