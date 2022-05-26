@@ -33,6 +33,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="serverless.template" />
-    <Content Include="Docker\Dockerfile" />
   </ItemGroup>
 </Project>
