@@ -30,7 +30,7 @@ Resources:
       FunctionName: OfficeRestrictionNotifications
       Handler: "LambdaFunctions::OfficeRestrictionNotifications.OfficeRestrictionNotificationsHandler::Handle"
       MemorySize: 256
-      PackageType: Zip
+      PackageType: Image
       Role: !GetAtt LambdaExecutionRole.Arn
       Runtime: dotnetcore3.1
       Timeout: 15
