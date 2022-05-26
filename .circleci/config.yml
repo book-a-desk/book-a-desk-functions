@@ -120,7 +120,7 @@ parameters:
     default: "book-a-desk_latest.tar"
   cloudformation-role-dev:
     type: string
-    default: arn:aws:iam::${AWS_ACCOUNT_DEV}:role/cloudformationstackbackenddev
+    default: arn:aws:iam::${AWS_ACCOUNT_DEV}:role/book-a-desk-lambda-test
   cloudformation-role-test:
     type: string
     default: arn:aws:iam::${AWS_ACCOUNT_TEST}:role/cloudformationstackbackendtest
