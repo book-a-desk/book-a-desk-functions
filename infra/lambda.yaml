@@ -20,7 +20,7 @@ Resources:
         - 'arn:aws:iam::aws:policy/CloudWatchFullAccess'
         - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
         - 'arn:aws:iam::aws:policy/AWSLambda_FullAccess'
-        - 'arn:aws:iam::aws:policy/${AWS::AccountId}/GetParametersByPath'
+        - !Sub 'arn:aws:iam::aws:policy/${AWS::AccountId}/GetParametersByPath'
   OfficeRestrictionNotificationsLambda:
     Type: AWS::Lambda::Function
     Properties: 
