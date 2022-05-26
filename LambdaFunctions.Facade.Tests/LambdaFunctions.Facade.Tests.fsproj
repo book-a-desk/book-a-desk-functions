@@ -7,7 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Library.fs" />
+        <Compile Include="OfficeTests.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="xunit" Version="2.4.1" />
     </ItemGroup>
 
 </Project>
