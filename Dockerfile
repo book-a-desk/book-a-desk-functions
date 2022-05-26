@@ -3,7 +3,6 @@ ARG AWSREGION
 ENV AWS_REGION=${AWSREGION}
 WORKDIR /app
 COPY . .
-COPY *.csproj ./
 RUN mkdir -p /home/.aws
 RUN ls
 CMD ls
