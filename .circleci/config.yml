@@ -13,8 +13,8 @@
 version: 2.1
 
 workflows:
-  production:
-    unless:
+  pull-request:
+    when:
       equal: ["trunk", << pipeline.git.branch >>]
     jobs:
       - build_and_test
@@ -22,8 +22,8 @@ workflows:
           requires:
             - build_and_test
 
-  pull-request:
-    when:
+  production:
+    unless:
       equal: ["trunk", << pipeline.git.branch >>]
     jobs:
       - build_and_test
