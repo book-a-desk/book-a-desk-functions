@@ -33,5 +33,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="serverless.template" />
+    <Compile Include="OfficeRestrictionNotificationsHandler.fs" />
   </ItemGroup>
 </Project>

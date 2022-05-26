@@ -13,4 +13,4 @@ RUN dotnet publish --configuration release --output out --no-restore
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "LambdaFunctions.Api.dll"]
+CMD ["LambdaFunctions.Notifications::LambdaFunctions.OfficeRestrictionNotificationsHandler::Handle"]

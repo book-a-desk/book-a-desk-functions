@@ -29,3 +29,10 @@ module Office =
         let officeId = (deserializedObject.Items |> Array.filter (fun office -> office.Name = office.ToString())).[0].Id        
         stream.Close()
         officeId
+        
+[<assembly: LambdaSerializer(typeof<Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer>)>]
+()
+type OfficeRestrictionNotificationsHandler() =
+    member _.Handle (context: ILambdaContext) = task {
+        printfn ""
+    }

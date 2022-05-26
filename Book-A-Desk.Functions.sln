@@ -8,7 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{
 		.circleci\config.yml = .circleci\config.yml
 	EndProjectSection
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "LambdaFunctions.Api", "LambdaFunctions.Api\LambdaFunctions.Api.fsproj", "{4CCFB93A-101D-4FE7-8763-C9E890491BDF}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "LambdaFunctions.Notifications", "LambdaFunctions.Notifications\LambdaFunctions.Notifications.fsproj", "{4CCFB93A-101D-4FE7-8763-C9E890491BDF}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LambdaFunctions.Facade.Tests", "LambdaFunctions.Facade.Tests\LambdaFunctions.Facade.Tests.fsproj", "{20995BD2-E500-41FA-8766-27F494C6BE87}"
 EndProject
