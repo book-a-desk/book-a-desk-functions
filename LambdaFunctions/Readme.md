@@ -1,13 +1,18 @@
-# Empty AWS Serverless Application Project
+# Giraffe Serverless Application
 
-This starter project consists of:
+This project shows how to run a [Giraffe](https://github.com/giraffe-fsharp/Giraffe) project as an AWS Lambda exposed through Amazon API Gateway. The NuGet package [Amazon.Lambda.AspNetCoreServer](https://www.nuget.org/packages/Amazon.Lambda.AspNetCoreServer) contains a Lambda function that is used to translate requests from API Gateway into the ASP.NET Core framework and then the responses from ASP.NET Core back to API Gateway.
+
+
+### Project Files ###
+
 * serverless.template - an AWS CloudFormation Serverless Application Model template file for declaring your Serverless functions and other AWS resources
-* Function.fs - Code file containing the F# function mapped to the single function declared in the template file
 * aws-lambda-tools-defaults.json - default argument settings for use with Visual Studio and command line deployment tools for AWS
+* Setup.fs - Code file that contains the bootstrap for configuring ASP.NET Core and Giraffe. It contains a main function for local development and the LambdaEntryPoint type for executing from Lambda. The LambdaEntryPoint type inherits from **Amazon.Lambda.AspNetCoreServer.APIGatewayProxyFunction** which contains the logic of converting requests and response back and forth between API Gateway and ASP.NET Core.
+* AppHandlers.fs - Code file that defines the HTTP handler functions and routing function.
+* web.config - used for local development.
 
 You may also have a test project depending on the options selected.
 
-The generated project contains a Serverless template declaration for a single AWS Lambda function that will be exposed through Amazon API Gateway as a HTTP *Get* operation. Edit the template to customize the function or add more functions and other resources needed by your application, and edit the function code in Function.cs. You can then deploy your Serverless application.
 
 ## Here are some steps to follow from Visual Studio:
 
@@ -31,12 +36,12 @@ If already installed check if new version is available.
 
 Execute unit tests
 ```
-    cd "Book-A-Desk.Functions/test/Book-A-Desk.Functions.Tests"
+    cd "LambdaFunctions/test/LambdaFunctions.Tests"
     dotnet test
 ```
 
 Deploy application
 ```
-    cd "Book-A-Desk.Functions/src/Book-A-Desk.Functions"
+    cd "LambdaFunctions/src/LambdaFunctions"
     dotnet lambda deploy-serverless
 ```

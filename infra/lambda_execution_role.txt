@@ -1,0 +1,7 @@
+LambdaExecutionRole
+AWS service: lambda
+Policies:
+- AmazonS3FullAccess
+- CloudWatchFullAccess
+- AmazonDynamoDBFullAccess
+- AWSLambda_FullAccess

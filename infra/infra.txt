@@ -1,0 +1,35 @@
+Manual prerequisites:
+- Create user "book-a-desk-cloudformation-lambda"
+
+- Assign 5 user permissions to execute cloudformation stack
+  AmazonS3FullAccess
+  CloudWatchFullAccess
+  PassRole
+  AWSLambda_FullAccess
+  AmazonEC2ContainerRegistryFullAccess
+  GetParametersByPath (custom parameter):
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParametersByPath"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+- Create parameters in the parameter store 
+  /BookADesk/Book-A-Desk-Api/Url: The base URL for the API
+  /BookADesk/Offices/Canada: The name of the office in Canada
+  /BookADesk/Offices/Europe: The name of the office in Europe
+
+Cloudformation execution:
+- Create a S3 Bucket "book-a-desk-lambda"
+- Create a role "Book-A-Desk-LambdaExecutionRole"
+- Create a rule in Event Bridge "DailyOfficeRestrictionNotificationsCanada"
+- Create a rule in Event Bridge "DailyOfficeRestrictionNotificationsEurope"
+- Create a lambda function "OfficeRestrictionNotifications"
+- Add a trigger for each existing rule (with an event)

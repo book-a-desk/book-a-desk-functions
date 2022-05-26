@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="deploy-configuration-europe.json" />
+        <Content Include="deploy-configuration-canada.json" />
+        <Content Include="deploy-functions.bat" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="2.0.0" />
+      <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.2.0" />
+      <PackageReference Include="AWSSDK.Lambda" Version="3.7.9.4" />
+      <PackageReference Include="FSharp.Data" Version="4.2.8" />
+      <PackageReference Include="Hopac" Version="0.5.1" />
+      <PackageReference Include="Http.fs" Version="5.4.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="System.Text.Json" Version="6.0.2" />
+    </ItemGroup>
+
+</Project>

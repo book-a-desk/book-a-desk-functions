@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  ImageUri:
+    Type: String
+    Description: The URI of the Docker image
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: Book-A-Desk-LambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - 'arn:aws:iam::aws:policy/CloudWatchFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
+        - 'arn:aws:iam::aws:policy/AWSLambda_FullAccess'
+        - 'arn:aws:iam::aws:policy/${AWS::AccountId}/GetParametersByPath'
+  OfficeRestrictionNotificationsLambda:
+    Type: AWS::Lambda::Function
+    Properties: 
+      Code:
+          ImageUri: !Ref ImageUri
+      Description: Send a notification for office restrictions
+      FunctionName: OfficeRestrictionNotifications
+      Handler: "LambdaFunctions::OfficeRestrictionNotifications.OfficeRestrictionNotificationsHandler::Handle"
+      MemorySize: 256
+      PackageType: Zip
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: dotnetcore3.1
+      Timeout: 15
+  DailyOfficeRestrictionNotificationsCanada:
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: Send a daily notification for Canada Office
+      EventBusName: default
+      EventPattern:
+        source:
+          - aws.lambda
+        detail:
+          location:
+            - canada
+      Name: DailyOfficeRestrictionNotificationsCanada
+      RoleArn: !GetAtt LambdaExecutionRole.Arn
+      ScheduleExpression: cron(0 13 * * ? *)
+      Targets: 
+        - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
+        - Id: !Ref OfficeRestrictionNotificationsLambda
+  DailyOfficeRestrictionNotificationsEurope:
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: Send a daily notification for Europe Office
+      EventBusName: default
+      EventPattern:
+        source:
+          - aws.lambda
+        detail:
+          location:
+            - europe
+      Name: DailyOfficeRestrictionNotificationsEurope
+      RoleArn: !GetAtt LambdaExecutionRole.Arn
+      ScheduleExpression: cron(0 9 * * ? *)
+      Targets: 
+        - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
+        - Id: !Ref OfficeRestrictionNotificationsLambda
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Ref OfficeRestrictionNotificationsLambda
+Outputs:
+  LambdaFunction:
+    Description: Lambda function
+    Value: !Ref OfficeRestrictionNotificationsLambda

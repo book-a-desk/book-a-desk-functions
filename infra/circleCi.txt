@@ -1,0 +1,6 @@
+1 - Build code
+2 - Build docker image
+3 - Create private registry
+    => Publish docker image on elastic container registry (AWS)
+4 - Start cloud formation stack
+
