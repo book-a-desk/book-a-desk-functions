@@ -19,6 +19,8 @@ workflows:
     jobs:
       - build_and_test
       - build_image:
+          context:
+            - book-a-desk
           requires:
             - build_and_test
 
@@ -28,6 +30,8 @@ workflows:
     jobs:
       - build_and_test
       - build_image:
+          context:
+            - book-a-desk
           requires:
             - build_and_test
       - push-image:
