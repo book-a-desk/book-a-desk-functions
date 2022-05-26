@@ -28,7 +28,6 @@ Resources:
           ImageUri: !Ref ImageUri
       Description: Send a notification for office restrictions
       FunctionName: OfficeRestrictionNotifications
-      Handler: "LambdaFunctions::OfficeRestrictionNotifications.OfficeRestrictionNotificationsHandler::Handle"
       MemorySize: 256
       PackageType: Image
       Role: !GetAtt LambdaExecutionRole.Arn
