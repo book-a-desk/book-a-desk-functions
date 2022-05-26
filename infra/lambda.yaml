@@ -32,7 +32,7 @@ Resources:
       MemorySize: 256
       PackageType: Image
       Role: !GetAtt LambdaExecutionRole.Arn
-      Runtime: dotnetcore3.1
+      Runtime: dotnet6
       Timeout: 15
   DailyOfficeRestrictionNotificationsCanada:
     Type: AWS::Events::Rule
