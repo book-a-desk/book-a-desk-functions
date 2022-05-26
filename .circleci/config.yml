@@ -168,7 +168,7 @@ commands:
           name: Ensure infrastructure is up to date
           command: |
             aws cloudformation deploy \
-            --parameter-overrides "ImageUri=<< parameters.ecr-account-url >>/${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}/build-<< pipeline.number >>" \
+            --parameter-overrides "ImageUri=<< parameters.ecr-account-url >>/${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}:build-<< pipeline.number >>" \
             --stack-name << parameters.stack-name >> \
             --template-file ./infra/lambda.yaml \
             --capabilities CAPABILITY_NAMED_IAM \
