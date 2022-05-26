@@ -43,7 +43,6 @@ workflows:
             - build_image
       - deploy:
           name: deploy-to-dev
-          docker-repo: ${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}
           ecr-account-url: ${AWS_ECR_ACCOUNT_URL_DEV}
           authenticate-aws:
             - authenticate-aws-book-a-desk-dev
@@ -109,9 +108,6 @@ orbs:
   aws-cli: circleci/aws-cli@1.3.0
   
 parameters:
-  docker-repo:
-    type: string
-    default: book-a-desk
   docker-img-version:
     type: string
     default: "build-<< pipeline.number >>"
@@ -146,15 +142,15 @@ commands:
           name: Tag Docker image for ECR
           command: |
             docker tag \
-              << pipeline.parameters.docker-repo >>:<< pipeline.parameters.docker-img-version >> \
-              "<< parameters.ecr-account-url >>/<< pipeline.parameters.docker-repo >>:<< pipeline.parameters.docker-img-version >>"
+              ${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}:<< pipeline.parameters.docker-img-version >> \
+              "<< parameters.ecr-account-url >>/${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}:<< pipeline.parameters.docker-img-version >>"
       - run:
           name: Docker login
           command: aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin << parameters.ecr-account-url >>
       - run:
           name: Push Docker image
           command: |
-            docker push "<< parameters.ecr-account-url >>/<< pipeline.parameters.docker-repo >>:<< pipeline.parameters.docker-img-version >>"
+            docker push "<< parameters.ecr-account-url >>/${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}:<< pipeline.parameters.docker-img-version >>"
   aws-cloudformation-deploy:
     parameters:
       ecr-account-url:
@@ -163,14 +159,12 @@ commands:
         type: string
       cloudformation-role:
         type: string
-      docker-repo:
-        type: string
     steps:
       - run:
           name: Ensure infrastructure is up to date
           command: |
             aws cloudformation deploy \
-            --parameter-overrides "ImageUri=<< parameters.ecr-account-url >>/<< parameters.docker-repo >>/build-<< pipeline.number >>" \
+            --parameter-overrides "ImageUri=<< parameters.ecr-account-url >>/${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}/build-<< pipeline.number >>" \
             --stack-name << parameters.stack-name >> \
             --template-file ./infra/lambda.yaml \
             --capabilities CAPABILITY_NAMED_IAM \
@@ -223,14 +217,14 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build -t << pipeline.parameters.docker-repo >>:<< pipeline.parameters.docker-img-version >> \
+            docker build -t ${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}:<< pipeline.parameters.docker-img-version >> \
               --build-arg AWSREGION=$AWS_REGION --build-arg AWS_DEVELOPMENTSTORAGE=false .
       - run:
           name: Save Docker image
           command: |
             docker save \
               -o << pipeline.parameters.docker-tar-filename >> \
-              << pipeline.parameters.docker-repo >>:<< pipeline.parameters.docker-img-version >>
+              ${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}:<< pipeline.parameters.docker-img-version >>
       - persist_to_workspace:
           root: .
           paths:
@@ -269,8 +263,6 @@ jobs:
         type: string
       cloudformation-role:
         type: string
-      docker-repo:
-        type: string
     steps:
       - checkout
       - steps: << parameters.authenticate-aws >>
@@ -279,6 +271,5 @@ jobs:
           aws-region: AWS_REGION
       - aws-cloudformation-deploy:
           ecr-account-url: << parameters.ecr-account-url >>
-          docker-repo: << parameters.docker-repo >>
           stack-name: << parameters.stack-name >>
           cloudformation-role: << parameters.cloudformation-role >>
