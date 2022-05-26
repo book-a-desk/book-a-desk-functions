@@ -12,10 +12,10 @@ let arrayExampleHandler (itemCount:int) =
 
 let webApp:HttpHandler =
     choose [
-        GET >=>
-            choose [
-                route "/" >=> eventMapperHandler
-            ]
+//        GET >=>
+//            choose [
+//                route "/" >=> 
+//            ]
         setStatusCode 404 >=> text "Not Found" ]
 
 // ---------------------------------

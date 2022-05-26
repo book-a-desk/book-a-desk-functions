@@ -4,17 +4,6 @@ open System
 open System.Text
 open System.Net
 open Newtonsoft.Json
-
-type Office =
-    {
-        Id: string
-        Name: string
-    }
- 
-type OfficeResponse =
-    {
-        Items: Office array
-    }
    
 type OfficeReference =
     {

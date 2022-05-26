@@ -4,8 +4,7 @@ ENV AWS_REGION=${AWSREGION}
 WORKDIR /app
 COPY LambdaFunctions.Api/*.fsproj ./LambdaFunctions.Api/
 RUN mkdir -p /home/.aws
-RUN dotnet restore ./LambdaFunctions.Api/LambdaFunctions.fsproj
-RUN ls
+RUN dotnet restore ./LambdaFunctions.Api/LambdaFunctions.Api.fsproj
 RUN dotnet publish \
         --configuration release \
         --output out \
