@@ -129,7 +129,7 @@ parameters:
     default: arn:aws:iam::${AWS_ACCOUNT_PROD}:role/cloudformationstackbackendprod
   stack-name:
     type: string
-    default: book-a-desk-backend
+    default: book-a-desk-functions
     
 commands:
   push-to-ecr:
