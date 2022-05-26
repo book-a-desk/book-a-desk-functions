@@ -16,7 +16,7 @@ Resources:
               Service: ecs-tasks.amazonaws.com
             Action: 'sts:AssumeRole'
       ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly'
         - 'arn:aws:iam::aws:policy/CloudWatchFullAccess'
         - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
         - 'arn:aws:iam::aws:policy/AWSLambda_FullAccess'
