@@ -20,6 +20,7 @@
     <Compile Include="AppHandlers.fs" />
     <Compile Include="Rules\Events\OfficeRestrictionNotified.fs" />
     <Compile Include="Rules\OfficeRestrictionSchedule.fs" />
+    <Compile Include="OfficeRestrictionNotificationsHandler.fs" />
     <Compile Include="Setup.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +34,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="serverless.template" />
-    <Compile Include="OfficeRestrictionNotificationsHandler.fs" />
   </ItemGroup>
 </Project>
