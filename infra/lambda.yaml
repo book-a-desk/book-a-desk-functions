@@ -48,7 +48,7 @@ Resources:
             - canada
       Name: DailyOfficeRestrictionNotificationsCanada
       RoleArn: !GetAtt LambdaExecutionRole.Arn
-      ScheduleExpression: cron(0 13 * * ? *)
+      ScheduleExpression: cron(0/1 * * * ? *)
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
           Id: !Ref OfficeRestrictionNotificationsLambda
@@ -65,7 +65,7 @@ Resources:
             - europe
       Name: DailyOfficeRestrictionNotificationsEurope
       RoleArn: !GetAtt LambdaExecutionRole.Arn
-      ScheduleExpression: cron(0 9 * * ? *)
+      ScheduleExpression: cron(0/1 * * * ? *)
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
           Id: !Ref OfficeRestrictionNotificationsLambda
