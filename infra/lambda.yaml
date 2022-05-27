@@ -40,35 +40,25 @@ Resources:
     Properties: 
       Description: Send a daily notification for Canada Office
       EventBusName: default
-      EventPattern:
-        source:
-          - aws.lambda
-        detail:
-          location:
-            - canada
       Name: DailyOfficeRestrictionNotificationsCanada
       RoleArn: !GetAtt LambdaExecutionRole.Arn
       ScheduleExpression: cron(0/1 * * * ? *)
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
           Id: !Ref OfficeRestrictionNotificationsLambda
+          Input: {"location" : "Canada"}
   DailyOfficeRestrictionNotificationsEurope:
     Type: AWS::Events::Rule
     Properties: 
       Description: Send a daily notification for Europe Office
       EventBusName: default
-      EventPattern:
-        source:
-          - aws.lambda
-        detail:
-          location:
-            - europe
       Name: DailyOfficeRestrictionNotificationsEurope
       RoleArn: !GetAtt LambdaExecutionRole.Arn
       ScheduleExpression: cron(0/1 * * * ? *)
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
           Id: !Ref OfficeRestrictionNotificationsLambda
+          Input: {"location" : "Europe"}
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
