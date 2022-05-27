@@ -12,4 +12,4 @@ FROM public.ecr.aws/lambda/dotnet:6
 WORKDIR /app
 RUN mkdir -p ${LAMBDA_TASK_ROOT}
 COPY --from=build-env /app/out ${LAMBDA_TASK_ROOT}
-CMD ["LambdaFunctions.Notifications::LambdaFunctions.AppHandlers::webApp"]
+CMD ["LambdaFunctions.Notifications::LambdaFunctions.OfficeRestrictionNotificationsHandler::Handle"]
