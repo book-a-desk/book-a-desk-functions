@@ -31,7 +31,9 @@ let configureServices (services : IServiceCollection) =
     //
     // services.AddAWSService<Amazon.S3.IAmazonS3>() |> ignore
 
-    services.AddGiraffe() |> ignore
+    services.AddGiraffe()
+            .AddControllers()
+            .AddNewtonsoftJson() |> ignore
 
 let configureLogging (builder : ILoggingBuilder) =
     let filter (l : LogLevel) = l.Equals LogLevel.Error
