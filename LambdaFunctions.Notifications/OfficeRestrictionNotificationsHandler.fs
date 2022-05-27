@@ -1,11 +1,17 @@
 ﻿namespace LambdaFunctions
 
 open Amazon.Lambda.Core
+open FSharp.Json
+type MyEvent =
+    {
+        location: string
+    }
 
 [<assembly: LambdaSerializer(typeof<Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer>)>]
 ()
 
 type OfficeRestrictionNotificationsHandler() =
     member _.Handle (event: string) = task {
-        printfn $"OfficeRestrictionNotificationsHandler was successfully called with event {event}"
+        let eventDeserialized = Json.deserialize<MyEvent> event
+        printfn $"OfficeRestrictionNotificationsHandler was successfully called with location {eventDeserialized.location}"
     }
