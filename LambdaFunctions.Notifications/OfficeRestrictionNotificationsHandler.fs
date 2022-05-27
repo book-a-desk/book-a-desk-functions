@@ -6,6 +6,6 @@ open Amazon.Lambda.Core
 ()
 
 type OfficeRestrictionNotificationsHandler() =
-    member _.Handle (context: ILambdaContext) = task {
-        printfn "OfficeRestrictionNotificationsHandler was successfully called"
+    member _.Handle (event: string) = task {
+        printfn $"OfficeRestrictionNotificationsHandler was successfully called with event {event}"
     }
