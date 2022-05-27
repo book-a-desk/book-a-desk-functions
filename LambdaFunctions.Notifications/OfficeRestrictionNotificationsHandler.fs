@@ -12,6 +12,6 @@ type MyEvent =
 
 type OfficeRestrictionNotificationsHandler() =
     member _.Handle (event: JObject) = task {
-        let eventDeserialized = event.ToObject<MyEvent>()
-        printfn $"OfficeRestrictionNotificationsHandler was successfully called with location {eventDeserialized.location}"
+        // let eventDeserialized = event.ToObject<MyEvent>()
+        printfn $"OfficeRestrictionNotificationsHandler was successfully called with location {event.ToString()}"
     }
