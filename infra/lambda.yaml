@@ -44,7 +44,8 @@ Resources:
         source:
           - aws.lambda
         detail:
-          location: canada
+          location:
+            - canada
       Name: DailyOfficeRestrictionNotificationsCanada
       RoleArn: !GetAtt LambdaExecutionRole.Arn
       ScheduleExpression: cron(0/1 * * * ? *)
