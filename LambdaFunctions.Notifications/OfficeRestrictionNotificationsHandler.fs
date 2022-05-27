@@ -1,7 +1,6 @@
 ﻿namespace LambdaFunctions
 
 open Amazon.Lambda.Core
-open Newtonsoft.Json.Linq
 type MyEvent =
     {
         location: string
@@ -11,7 +10,7 @@ type MyEvent =
 ()
 
 type OfficeRestrictionNotificationsHandler() =
-    member _.Handle (event: JObject) = task {
+    member _.Handle event = task {
         // let eventDeserialized = event.ToObject<MyEvent>()
-        printfn $"OfficeRestrictionNotificationsHandler was successfully called with location {event.ToString()}"
+        printfn $"OfficeRestrictionNotificationsHandler was successfully called with location {event}"
     }
