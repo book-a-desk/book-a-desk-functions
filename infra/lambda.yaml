@@ -48,7 +48,7 @@ Resources:
       ScheduleExpression: cron(0 13 * * ? *)
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
-        - Id: !Ref OfficeRestrictionNotificationsLambda
+        - Id: OfficeRestrictionNotificationsLambda
   DailyOfficeRestrictionNotificationsEurope:
     Type: AWS::Events::Rule
     Properties: 
@@ -65,7 +65,7 @@ Resources:
       ScheduleExpression: cron(0 9 * * ? *)
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
-        - Id: !Ref OfficeRestrictionNotificationsLambda
+        - Id: OfficeRestrictionNotificationsLambda
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
