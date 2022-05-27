@@ -9,7 +9,7 @@ RUN dotnet publish --configuration release --output out --no-restore
 
 # Build runtime image
 FROM public.ecr.aws/lambda/dotnet:6
-#WORKDIR /app
-#COPY --from=build-env /app/out .
-COPY publish/* ${LAMBDA_TASK_ROOT}
+WORKDIR /app
+RUN mkdir -p ${LAMBDA_TASK_ROOT}
+COPY --from=build-env /app/out ${LAMBDA_TASK_ROOT}
 CMD ["LambdaFunctions.Notifications::LambdaFunctions.AppHandlers::webApp"]
