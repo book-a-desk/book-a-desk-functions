@@ -46,7 +46,7 @@ Resources:
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
           Id: !Ref OfficeRestrictionNotificationsLambda
-          Input: {"location" : "Canada"}
+          Input: '{"location" : "Canada"}'
   DailyOfficeRestrictionNotificationsEurope:
     Type: AWS::Events::Rule
     Properties: 
@@ -58,7 +58,7 @@ Resources:
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
           Id: !Ref OfficeRestrictionNotificationsLambda
-          Input: {"location" : "Europe"}
+          Input: '{"location" : "Europe"}'
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
