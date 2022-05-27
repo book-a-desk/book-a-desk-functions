@@ -10,7 +10,7 @@ RUN dotnet restore
 RUN dotnet publish --configuration release --output out --no-restore
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
+FROM public.ecr.aws/lambda/dotnet:6
 WORKDIR /app
 COPY --from=build-env /app/out .
 CMD ["LambdaFunctions.Notifications::LambdaFunctions.OfficeRestrictionNotificationsHandler::Handle"]
