@@ -4,13 +4,12 @@ ENV AWS_REGION=${AWSREGION}
 WORKDIR /app
 COPY . .
 RUN mkdir -p /home/.aws
-RUN ls
-CMD ls
 RUN dotnet restore
 RUN dotnet publish --configuration release --output out --no-restore
 
 # Build runtime image
 FROM public.ecr.aws/lambda/dotnet:6
-WORKDIR /app
-COPY --from=build-env /app/out .
-CMD ["LambdaFunctions.Notifications::LambdaFunctions.OfficeRestrictionNotificationsHandler::Handle"]
+#WORKDIR /app
+#COPY --from=build-env /app/out .
+COPY publish/* ${LAMBDA_TASK_ROOT}
+CMD ["LambdaFunctions.Notifications::LambdaFunctions.AppHandlers::webApp"]
