@@ -14,6 +14,6 @@ type MyEvent =
 type OfficeRestrictionNotificationsHandler() =
     member _.Handle (event: JsonDocument) = task {
         let eventDeserialized = JsonSerializer.Deserialize<MyEvent>(event)
-        let officeId = Office.getOfficeById(eventDeserialized.location)
+        let officeId = Office.getOfficeById eventDeserialized.location
         printfn $"Handler was called with location {eventDeserialized.location} with officeId {officeId}"
     }
