@@ -42,7 +42,7 @@ Resources:
       EventBusName: default
       Name: DailyOfficeRestrictionNotificationsCanada
       RoleArn: !GetAtt LambdaExecutionRole.Arn
-      ScheduleExpression: cron(0/1 * * * ? *)
+      ScheduleExpression: cron(0/2 * * * ? *)
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
           Id: !Ref OfficeRestrictionNotificationsLambda
@@ -54,7 +54,7 @@ Resources:
       EventBusName: default
       Name: DailyOfficeRestrictionNotificationsEurope
       RoleArn: !GetAtt LambdaExecutionRole.Arn
-      ScheduleExpression: cron(0 9 * * ? *)
+      ScheduleExpression: cron(0/3 * * * ? *)
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
           Id: !Ref OfficeRestrictionNotificationsLambda
