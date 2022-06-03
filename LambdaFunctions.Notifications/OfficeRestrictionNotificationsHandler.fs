@@ -16,5 +16,5 @@ type OfficeRestrictionNotificationsHandler() =
         let eventDeserialized = JsonSerializer.Deserialize<MyEvent>(event)
         let officeId = Office.getOfficeById eventDeserialized.location
         let! sendNotification = OfficeRestrictions.sendOfficeRestrictionsNotifications officeId |> Async.AwaitTask
-        printfn $"Handler was called with location {eventDeserialized.location} with officeId {officeId}"
+        printfn $"Notification successfully sent for location {eventDeserialized.location} with OfficeId {officeId}"
     }

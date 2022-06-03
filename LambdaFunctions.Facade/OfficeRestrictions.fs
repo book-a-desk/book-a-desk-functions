@@ -18,7 +18,7 @@ type RestrictionNotifier =
     
 module OfficeRestrictions =
     let sendOfficeRestrictionsNotifications (officeId : string) = task {
-        let baseUrl = "https://api.dev.book-a-desk.broadsign.net" // Will be injected on pipeline
+        let baseUrl = "https://api.dev.book-a-desk.broadsign.net" // To inject
         let url = $"{baseUrl}/notify-office-restrictions"
         let request = HttpWebRequest.Create(url) :?> HttpWebRequest 
         request.ProtocolVersion <- HttpVersion.Version10
