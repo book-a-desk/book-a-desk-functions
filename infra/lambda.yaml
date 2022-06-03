@@ -54,7 +54,7 @@ Resources:
       EventBusName: default
       Name: DailyOfficeRestrictionNotificationsEurope
       RoleArn: !GetAtt LambdaExecutionRole.Arn
-      ScheduleExpression: cron(0/3 * * * ? *)
+      ScheduleExpression: cron(0 9 * * ? *)
       Targets: 
         - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
           Id: !Ref OfficeRestrictionNotificationsLambda
