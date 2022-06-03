@@ -24,7 +24,7 @@ module OfficeRestrictions =
         request.ProtocolVersion <- HttpVersion.Version10
         request.Method <- "POST"
                    
-        let today = DateTime.Today.AddDays(3).ToString "MM/dd/yyyy HH:mm:ss"
+        let today = DateTime.Today.ToString "MM/dd/yyyy HH:mm:ss"
         
         let restrictionNotifier =
             {
