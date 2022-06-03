@@ -25,7 +25,7 @@ module Office =
         let stream = response.GetResponseStream()
         let reader = new StreamReader(stream)
         let office = reader.ReadToEnd()
-        let deserializedObject = JsonConvert.DeserializeObject<OfficeResponse>(officeLocation)
-        let officeId = (deserializedObject.Items |> Array.filter (fun office -> office.Name = office.ToString())).[0].Id        
+        let deserializedObject = JsonConvert.DeserializeObject<OfficeResponse>(office)
+        let officeId = (deserializedObject.Items |> Array.filter (fun office -> office.Name = officeLocation.ToString())).[0].Id        
         stream.Close()
         officeId
