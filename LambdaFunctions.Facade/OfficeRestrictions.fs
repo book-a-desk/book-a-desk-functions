@@ -17,16 +17,15 @@ type RestrictionNotifier =
     }
     
 module OfficeRestrictions =
-    let sendOfficeRestrictionsNotifications = task {
+    let sendOfficeRestrictionsNotifications (officeId : string) = task {
         
         let url = "https://api.test.book-a-desk.broadsign.net/notify-office-restrictions"         // Will be injected on pipeline
 
         let request = HttpWebRequest.Create(url) :?> HttpWebRequest 
         request.ProtocolVersion <- HttpVersion.Version10
         request.Method <- "POST"
-
-        let officeId = Office.getOfficeById("Montreal")                                           // Will be injected on pipeline                        
-        let today = DateTime.Today.ToString "MM/dd/yyyy HH:mm:ss"
+                   
+        let today = DateTime.Today.AddDays(3).ToString "MM/dd/yyyy HH:mm:ss"
         
         let restrictionNotifier =
             {
