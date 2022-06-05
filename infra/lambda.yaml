@@ -38,7 +38,7 @@ Resources:
   DailyOfficeRestrictionNotificationsCanada:
     Type: AWS::Events::Rule
     Properties: 
-      Description: Send a daily notification for Canada Office
+      Description: Send a daily notification for Montreal Office
       EventBusName: default
       Name: DailyOfficeRestrictionNotificationsCanada
       RoleArn: !GetAtt LambdaExecutionRole.Arn
@@ -50,7 +50,7 @@ Resources:
   DailyOfficeRestrictionNotificationsEurope:
     Type: AWS::Events::Rule
     Properties: 
-      Description: Send a daily notification for Europe Office
+      Description: Send a daily notification for Berlin Office
       EventBusName: default
       Name: DailyOfficeRestrictionNotificationsEurope
       RoleArn: !GetAtt LambdaExecutionRole.Arn

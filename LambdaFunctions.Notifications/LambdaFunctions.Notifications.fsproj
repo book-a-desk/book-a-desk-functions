@@ -32,7 +32,6 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="appsettings.Development.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LambdaFunctions.Facade\LambdaFunctions.Facade.fsproj" />
