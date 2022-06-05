@@ -13,7 +13,7 @@ type OfficeRestrictionNotificationsHandler() =
     member _.Handle (event: JsonDocument) = task {
         let baseUrl = "https://api.dev.book-a-desk.broadsign.net" // To inject
         let eventDeserialized = JsonSerializer.Deserialize<OfficeRestrictionNotificationEvent>(event)
-        let officeId = Office.getOfficeById eventDeserialized.location baseUrl
-        let! sendNotification = OfficeRestrictions.sendOfficeRestrictionsNotifications officeId baseUrl |> Async.AwaitTask
+        let! officeId = Office.getOfficeById eventDeserialized.location baseUrl
+        let! sendNotification = OfficeRestrictions.sendOfficeRestrictionsNotifications officeId baseUrl
         printfn $"Notification successfully sent for location {eventDeserialized.location} with OfficeId {officeId}"
     }
