@@ -16,10 +16,9 @@ type OfficeResponse =
     }
 
 module Office =
-    let getOfficeById (officeLocation : string) =
-        let baseUrl = "https://api.test.book-a-desk.broadsign.net" // To inject
-        let urlOffices = $"{baseUrl}/offices" 
-        let request = HttpWebRequest.Create(urlOffices) :?> HttpWebRequest 
+    let getOfficeById (officeLocation : string) (baseUrl : string) =
+        let officesUrl = $"{baseUrl}/offices" 
+        let request = HttpWebRequest.Create(officesUrl) :?> HttpWebRequest 
         request.ProtocolVersion <- HttpVersion.Version10
         request.Method <- "GET"
         let response = request.GetResponse() :?> HttpWebResponse

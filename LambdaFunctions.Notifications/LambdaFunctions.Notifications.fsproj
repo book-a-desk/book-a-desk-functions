@@ -19,8 +19,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppHandlers.fs" />
-    <Compile Include="Rules\Events\OfficeRestrictionNotified.fs" />
-    <Compile Include="Rules\OfficeRestrictionSchedule.fs" />
     <Compile Include="OfficeRestrictionNotificationsHandler.fs" />
     <Compile Include="Setup.fs" />
   </ItemGroup>
@@ -34,7 +32,7 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="serverless.template" />
+    <Content Include="appsettings.Development.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LambdaFunctions.Facade\LambdaFunctions.Facade.fsproj" />

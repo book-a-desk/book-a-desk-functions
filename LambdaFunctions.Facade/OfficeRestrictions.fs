@@ -17,15 +17,13 @@ type RestrictionNotifier =
     }
     
 module OfficeRestrictions =
-    let sendOfficeRestrictionsNotifications (officeId : string) = task {
-        let baseUrl = "https://api.dev.book-a-desk.broadsign.net" // To inject
-        let url = $"{baseUrl}/notify-office-restrictions"
-        let request = HttpWebRequest.Create(url) :?> HttpWebRequest 
+    let sendOfficeRestrictionsNotifications (officeId : string) (baseUrl : string) = task {
+        let restrictionsUrl = $"{baseUrl}/notify-office-restrictions"
+        let request = HttpWebRequest.Create(restrictionsUrl) :?> HttpWebRequest 
         request.ProtocolVersion <- HttpVersion.Version10
         request.Method <- "POST"
                    
-        let today = DateTime.Today.ToString "MM/dd/yyyy HH:mm:ss"
-        
+        let today = DateTime.Today.ToString "MM/dd/yyyy HH:mm:ss"      
         let restrictionNotifier =
             {
                 Office = { id = officeId.ToString() }
@@ -36,7 +34,6 @@ module OfficeRestrictions =
         request.ContentType <- "application/x-www-form-urlencoded";
         request.ContentLength <- int64 postBytes.Length
         
-        printfn $"Sending request to {request.Address} on {today} for office {officeId}"
         let reqStream = request.GetRequestStream() 
         reqStream.Write(postBytes, 0, postBytes.Length);
         reqStream.Close()
