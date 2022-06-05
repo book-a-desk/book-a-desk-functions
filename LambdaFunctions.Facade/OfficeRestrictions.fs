@@ -16,9 +16,9 @@ type RestrictionNotifier =
     }
     
 module OfficeRestrictions =
-    let sendOfficeRestrictionsNotifications (officeId: string) (baseUrl: string) = async {
+    let sendOfficeRestrictionsNotifications (officeId : string) (baseUrl : string) = async {
         let restrictionsUrl = $"{baseUrl}/notify-office-restrictions"
-        let today = DateTime.Today.AddDays(1).ToString "MM/dd/yyyy HH:mm:ss"      
+        let today = DateTime.Today.ToString "MM/dd/yyyy HH:mm:ss"      
         let restrictionNotifier =
             {
                 Office = { id = officeId.ToString() }

@@ -18,20 +18,7 @@
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="5.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppHandlers.fs" />
     <Compile Include="OfficeRestrictionNotificationsHandler.fs" />
-    <Compile Include="Setup.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="web.config" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="appsettings.Development.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LambdaFunctions.Facade\LambdaFunctions.Facade.fsproj" />

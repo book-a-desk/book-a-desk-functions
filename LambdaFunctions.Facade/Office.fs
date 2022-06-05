@@ -19,7 +19,7 @@ module Office =
         let officesUrl = $"{baseUrl}/offices"
         let! result = HttpRequest.getAsyncGetContent officesUrl
         let deserializedObject = JsonConvert.DeserializeObject<OfficeResponse>(result)
-        let officeId = (deserializedObject.Items |> Array.filter (fun office -> office.Name = officeLocation.ToString())).[0].Id        
+        let officeId = (deserializedObject.Items |> Array.filter (fun office -> office.Name = officeLocation)).[0].Id        
         return officeId
     }
         
