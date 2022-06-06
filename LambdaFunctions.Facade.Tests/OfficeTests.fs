@@ -2,48 +2,25 @@
 
 open System
 open Xunit
-
-type OfficeId = OfficeId of Guid
-type CityName = CityName of string
- 
- type OpeningHours =
-     {
-         Text: string
-     }
- 
- type Office =
-     {
-         Id: OfficeId
-         Name: CityName
-         OpeningHours : OpeningHours
-     }
-
- module Offices =
-    
-    let officeToTest = CityName "Montreal"
-  
-    let All =
-        [
-            {
-                Id = Guid.Parse("4B774D13-645B-4378-A925-1DA565A35FD7") |> OfficeId
-                Name = CityName "Montreal"
-                OpeningHours =
-                    {
-                        Text = "7:30am to 6:30pm from Tuesday to Thursday"
-                    }
-            }
-            {
-                Id = Guid.Parse("16C3D468-C115-4452-8502-58B821D6640B") |> OfficeId
-                Name = CityName "Berlin"
-                OpeningHours =
-                    {
-                        Text = "7:00am to 7:00pm from Tuesday to Thursday"
-                    }
-            }
-        ]
         
-//[<Fact>]
-//let ``Given a list of offices When retrieving an office Then returns office Id`` () =
-//    let offices = Offices.All
+[<Fact>]
+let ``Given an office location in Canada When calling the offices endpoint Then returns office Id`` () = async {
+    let baseUrl = "https://api.dev.book-a-desk.broadsign.net" // TODO: To mock
+    let officeLocation = "Montreal"
+    let expectedOfficeId = "4b774d13-645b-4378-a925-1da565a35fd7"
+    let! officeId = Office.getOfficeById officeLocation baseUrl
+    Assert.Equal(expectedOfficeId, officeId)
+}
+
+[<Fact>]
+let ``Given an office location in Europe When calling the offices endpoint Then returns office Id`` () = async {
+    let baseUrl = "https://api.dev.book-a-desk.broadsign.net" // TODO: To mock
+    let officeLocation = "Berlin"
+    let expectedOfficeId = "16c3d468-c115-4452-8502-58b821d6640b"
+    let! officeId = Office.getOfficeById officeLocation baseUrl
+    Assert.Equal(expectedOfficeId, officeId)
+}
+
+
     
     

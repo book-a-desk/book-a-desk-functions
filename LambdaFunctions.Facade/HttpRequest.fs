@@ -5,6 +5,8 @@ open System.Text
 
 module HttpRequest =
     
+    let baseUrl = "https://api.dev.book-a-desk.broadsign.net" // To inject
+    
     let getAsyncGetContent (url : string) = async {
         let httpClient = new HttpClient()
         let! response = httpClient.GetAsync(url) |> Async.AwaitTask
