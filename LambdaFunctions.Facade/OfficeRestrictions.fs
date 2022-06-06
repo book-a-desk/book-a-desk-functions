@@ -1,7 +1,6 @@
 ﻿namespace LambdaFunctions.Facade
 
 open System
-open Book_A_Desk.Api.Tests
 open Newtonsoft.Json
    
 type OfficeReference =
