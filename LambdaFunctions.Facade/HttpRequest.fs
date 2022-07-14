@@ -1,11 +1,12 @@
 ﻿namespace LambdaFunctions.Facade
 
+open System
 open System.Net.Http
 open System.Text
 
 module HttpRequest =
     
-    let baseUrl = "https://api.dev.book-a-desk.broadsign.net" // To inject
+    let baseUrl = Environment.GetEnvironmentVariable("BOOK_A_DESK_BASE_API_URL")
     
     let getAsyncGetContent (url : string) = async {
         let httpClient = new HttpClient()

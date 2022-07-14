@@ -1,12 +1,16 @@
 Manual prerequisites:
 - Create user "book-a-desk-cloudformation-lambda"
+  # Specify "Access key" for AWS credential type
+  # Set without a permissions boundary
 
-- Assign 5 user permissions to execute cloudformation stack
+- Assign 7 user permissions to execute cloudformation stack
+  AmazonEC2ContainerRegistryFullAccess
   AmazonS3FullAccess
   CloudWatchFullAccess
   PassRole
   AWSLambda_FullAccess
-  AmazonEC2ContainerRegistryFullAccess
+  AWSCloudFormationFullAccess
+  
   GetParametersByPath (custom parameter):
   {
     "Version": "2012-10-17",
@@ -21,15 +25,33 @@ Manual prerequisites:
     ]
 }
 
+- Create a role "book-a-desk-lambda" with the following permissions:
+  GetParametersByPath
+  IAMFullAccess
+  AmazonEC2ContainerRegistryFullAccess
+  CloudWatchFullAccess
+  CloudWatchEventsFullAccess
+  AWSLambda_FullAccess
+  
 - Create parameters in the parameter store 
   /BookADesk/Book-A-Desk-Api/Url: The base URL for the API
   /BookADesk/Offices/Canada: The name of the office in Canada
   /BookADesk/Offices/Europe: The name of the office in Europe
 
+- Create two environment variables in context "book-a-desk" in CircleCI
+  BOOK_A_DESK_BASE_API_URL_{ENVIRONMENT}
+  AWS_ECR_ACCOUNT_URL_{ENVIRONMENT}
+
+- Create two environment variables in context "aws-credentials" in CircleCI
+  AWS_ACCESS_KEY_ID_LAMBDA_{ENVIRONMENT}
+  AWS_SECRET_ACCESS_KEY_LAMBDA_{ENVIRONMENT}
+
+========================
+
 Cloudformation execution:
-- Create a S3 Bucket "book-a-desk-lambda"
 - Create a role "Book-A-Desk-LambdaExecutionRole"
 - Create a rule in Event Bridge "DailyOfficeRestrictionNotificationsCanada"
 - Create a rule in Event Bridge "DailyOfficeRestrictionNotificationsEurope"
 - Create a lambda function "OfficeRestrictionNotifications"
 - Add a trigger for each existing rule (with an event)
+- Add a log group for CloudWatch

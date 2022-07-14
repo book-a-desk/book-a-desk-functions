@@ -4,6 +4,9 @@ Parameters:
   ImageUri:
     Type: String
     Description: The URI of the Docker image
+  BookADeskBaseApiUrl:
+    Type: String
+    Description: The base URL of API
 Resources:
   LambdaExecutionRole:
     Type: AWS::IAM::Role
@@ -29,6 +32,9 @@ Resources:
     Properties: 
       Code:
           ImageUri: !Ref ImageUri
+      Environment:
+        Variables:
+          BOOK_A_DESK_BASE_API_URL: !Ref BookADeskBaseApiUrl
       Description: Send a notification for office restrictions
       FunctionName: OfficeRestrictionNotifications
       MemorySize: 256

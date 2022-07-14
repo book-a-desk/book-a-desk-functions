@@ -5,10 +5,16 @@
 
 # Note: These are provided by the aws-credentials context
 # - AWS_REGION
+# - AWS_ACCESS_KEY_ID_LAMBDA_DEV
+# - AWS_SECRET_ACCESS_KEY_LAMBDA_DEV
+# - AWS_ACCESS_KEY_ID_LAMBDA_TEST
+# - AWS_SECRET_ACCESS_KEY_LAMBDA_TEST
 
 # Note: These are provided by the book-a-desk context
 # - BOOK_A_DESK_BASE_API_URL_DEV
 # - AWS_ECR_ACCOUNT_URL_DEV
+# - BOOK_A_DESK_BASE_API_URL_TEST
+# - AWS_ECR_ACCOUNT_URL_TEST
 
 version: 2.1
 
@@ -57,33 +63,33 @@ workflows:
             - book-a-desk
           requires:
             - push-image-to-dev
-#      - push-image:
-#          name: push-image-to-test
-#          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_TEST}
-#          authenticate-aws:
-#            - authenticate-aws-book-a-desk-test
-#          context:
-#            - aws-credentials
-#            - book-a-desk
-#          requires:
-#            - deploy-to-dev
-#      - deploy:
-#          name: deploy-to-test
-#          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_TEST}
-#          authenticate-aws:
-#            - authenticate-aws-book-a-desk-test
-#          stack-name: << pipeline.parameters.stack-name >>
-#          cloudformation-role: << pipeline.parameters.cloudformation-role-test >>
-#          context:
-#            - aws-credentials
-#            - book-a-desk
-#          requires:
-#            - push-image-to-test
-#      - production-gate:
-#          type:
-#            approval
-#          requires:
-#            - deploy-to-test
+      - push-image:
+          name: push-image-to-test
+          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_TEST}
+          authenticate-aws:
+            - authenticate-aws-book-a-desk-test
+          context:
+            - aws-credentials
+            - book-a-desk
+          requires:
+            - deploy-to-dev
+      - deploy:
+          name: deploy-to-test
+          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_TEST}
+          authenticate-aws:
+            - authenticate-aws-book-a-desk-test
+          stack-name: << pipeline.parameters.stack-name >>
+          cloudformation-role: << pipeline.parameters.cloudformation-role-test >>
+          context:
+            - aws-credentials
+            - book-a-desk
+          requires:
+            - push-image-to-test
+      - production-gate:
+          type:
+            approval
+          requires:
+            - deploy-to-test
 #      - push-image:
 #          name: push-image-to-prod
 #          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_PROD}
@@ -120,13 +126,13 @@ parameters:
     default: "book-a-desk_latest.tar"
   cloudformation-role-dev:
     type: string
-    default: arn:aws:iam::${AWS_ACCOUNT_DEV}:role/book-a-desk-lambda-test
+    default: arn:aws:iam::${AWS_ACCOUNT_DEV}:role/book-a-desk-lambda
   cloudformation-role-test:
     type: string
-    default: arn:aws:iam::${AWS_ACCOUNT_TEST}:role/cloudformationstackbackendtest
+    default: arn:aws:iam::${AWS_ACCOUNT_TEST}:role/book-a-desk-lambda
   cloudformation-role-prod:
     type: string
-    default: arn:aws:iam::${AWS_ACCOUNT_PROD}:role/cloudformationstackbackendprod
+    default: arn:aws:iam::${AWS_ACCOUNT_PROD}:role/book-a-desk-lambda
   stack-name:
     type: string
     default: book-a-desk-functions
@@ -163,12 +169,14 @@ commands:
         type: string
       cloudformation-role:
         type: string
+      book-a-desk-base-api-url:
+        type: string
     steps:
       - run:
           name: Ensure infrastructure is up to date
           command: |
             aws cloudformation deploy \
-            --parameter-overrides "ImageUri=<< parameters.ecr-account-url >>/${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}:build-<< pipeline.number >>" \
+            --parameter-overrides "ImageUri=<< parameters.ecr-account-url >>/${BOOK_A_DESK_NOTIFICATIONS_DOCKER_REPO}:build-<< pipeline.number >> " "BookADeskBaseApiUrl=<< parameters.book-a-desk-base-api-url >>" \
             --stack-name << parameters.stack-name >> \
             --template-file ./infra/lambda.yaml \
             --capabilities CAPABILITY_NAMED_IAM \
@@ -181,6 +189,15 @@ commands:
           command: |
             echo "export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID_LAMBDA_DEV}" >> $BASH_ENV
             echo "export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY_LAMBDA_DEV}" >> $BASH_ENV
+            echo $AWS_SECRET_ACCESS_KEY_ID
+  authenticate-aws-book-a-desk-test:
+    description: "Configure AWS credentials for Book A Desk Test"
+    steps:
+      - run:
+          name: "Initialize BASH_ENV variables"
+          command: |
+            echo "export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID_LAMBDA_TEST}" >> $BASH_ENV
+            echo "export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY_LAMBDA_TEST}" >> $BASH_ENV
             echo $AWS_SECRET_ACCESS_KEY_ID
   log-aws-identity:
     parameters:
@@ -267,6 +284,8 @@ jobs:
         type: string
       cloudformation-role:
         type: string
+      book-a-desk-base-api-url:
+        type: string
     steps:
       - checkout
       - steps: << parameters.authenticate-aws >>
@@ -277,3 +296,4 @@ jobs:
           ecr-account-url: << parameters.ecr-account-url >>
           stack-name: << parameters.stack-name >>
           cloudformation-role: << parameters.cloudformation-role >>
+          book-a-desk-base-api-url: << parameters.book-a-desk-base-api-url >>
