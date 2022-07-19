@@ -54,6 +54,7 @@ workflows:
       - deploy:
           name: deploy-to-dev
           ecr-account-url: ${AWS_ECR_ACCOUNT_URL_DEV}
+          book-a-desk-base-api-url: ${BOOK_A_DESK_BASE_API_URL_DEV}
           authenticate-aws:
             - authenticate-aws-book-a-desk-dev
           stack-name: << pipeline.parameters.stack-name >>
@@ -66,6 +67,7 @@ workflows:
       - push-image:
           name: push-image-to-test
           ecr-account-url: ${AWS_ECR_ACCOUNT_URL_TEST}
+          aws-account-id: ${AWS_ACCOUNT_TEST}
           authenticate-aws:
             - authenticate-aws-book-a-desk-test
           context:
@@ -76,6 +78,7 @@ workflows:
       - deploy:
           name: deploy-to-test
           ecr-account-url: ${AWS_ECR_ACCOUNT_URL_TEST}
+          book-a-desk-base-api-url: ${BOOK_A_DESK_BASE_API_URL_TEST}
           authenticate-aws:
             - authenticate-aws-book-a-desk-test
           stack-name: << pipeline.parameters.stack-name >>
@@ -93,6 +96,7 @@ workflows:
 #      - push-image:
 #          name: push-image-to-prod
 #          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_PROD}
+#          aws-account-id: ${AWS_ACCOUNT_PROD}
 #          authenticate-aws:
 #            - authenticate-aws-book-a-desk-prod
 #          context:
@@ -103,6 +107,7 @@ workflows:
 #      - deploy:
 #          name: deploy-to-prod
 #          ecr-account-url: ${AWS_ECR_ACCOUNT_URL_PROD}
+#          book-a-desk-base-api-url: ${BOOK_A_DESK_BASE_API_URL_PROD}
 #          authenticate-aws:
 #            - authenticate-aws-book-a-desk-prod
 #          stack-name: << pipeline.parameters.stack-name >>
