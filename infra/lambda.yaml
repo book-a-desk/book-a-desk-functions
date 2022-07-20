@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  ImageUri:
+    Type: String
+    Description: The URI of the Docker image
+  BookADeskBaseApiUrl:
+    Type: String
+    Description: The base URL of API
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: Book-A-Desk-LambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: 
+              - lambda.amazonaws.com
+              - events.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess'
+        - 'arn:aws:iam::aws:policy/CloudWatchEventsReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/CloudWatchFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
+        - 'arn:aws:iam::aws:policy/AWSLambda_FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess'
+  OfficeRestrictionNotificationsLambda:
+    Type: AWS::Lambda::Function
+    Properties: 
+      Code:
+          ImageUri: !Ref ImageUri
+      Environment:
+        Variables:
+          BOOK_A_DESK_BASE_API_URL: !Ref BookADeskBaseApiUrl
+      Description: Send a notification for office restrictions
+      FunctionName: OfficeRestrictionNotifications
+      MemorySize: 256
+      PackageType: Image
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 15
+  DailyOfficeRestrictionNotificationsCanada:
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: Send a daily notification for Montreal Office
+      EventBusName: default
+      Name: DailyOfficeRestrictionNotificationsCanada
+      RoleArn: !GetAtt LambdaExecutionRole.Arn
+      ScheduleExpression: cron(0 13 * * ? *)
+      Targets: 
+        - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
+          Id: !Ref OfficeRestrictionNotificationsLambda
+          Input: '{"location" : "Montreal"}'
+  DailyOfficeRestrictionNotificationsEurope:
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: Send a daily notification for Berlin Office
+      EventBusName: default
+      Name: DailyOfficeRestrictionNotificationsEurope
+      RoleArn: !GetAtt LambdaExecutionRole.Arn
+      ScheduleExpression: cron(0 9 * * ? *)
+      Targets: 
+        - Arn: !GetAtt OfficeRestrictionNotificationsLambda.Arn
+          Id: !Ref OfficeRestrictionNotificationsLambda
+          Input: '{"location" : "Berlin"}'
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Ref OfficeRestrictionNotificationsLambda
+Outputs:
+  LambdaFunction:
+    Description: Lambda function
+    Value: !Ref OfficeRestrictionNotificationsLambda
