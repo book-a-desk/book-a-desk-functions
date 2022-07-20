@@ -6,10 +6,26 @@ Manual prerequisites:
 - Assign 7 user permissions to execute cloudformation stack
   AmazonEC2ContainerRegistryFullAccess
   AmazonS3FullAccess
-  CloudWatchFullAccess
-  PassRole
   AWSLambda_FullAccess
   AWSCloudFormationFullAccess
+  CloudWatchFullAccess
+  
+  PassRole
+  {
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Sid": "VisualEditor0",
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": [
+                  "arn:aws:iam::{accountId}:role/cloudformationstacktest",
+                  "arn:aws:iam::{accountId}:role/cloudformationstackbackendtest",
+                  "arn:aws:iam::{accountId}:role/book-a-desk-lambda"
+              ]
+          }
+      ]
+  }
   
   GetParametersByPath (custom parameter):
   {
@@ -45,6 +61,11 @@ Manual prerequisites:
 - Create two environment variables in context "aws-credentials" in CircleCI
   AWS_ACCESS_KEY_ID_LAMBDA_{ENVIRONMENT}
   AWS_SECRET_ACCESS_KEY_LAMBDA_{ENVIRONMENT}
+  
+ - Create a private repository "book-a-desk-notification-lambda" in ECR (Elastic Container Registry) with default settings
+    Tag immutability: Disabled
+    Scan on push: Disabled
+    KMS encryption: Disabled
 
 ========================
 
