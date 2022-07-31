@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Config.fs" />
+    <Compile Include="Constants.fs" />
     <Compile Include="OfficeRestrictionNotificationsHandler.fs" />
   </ItemGroup>
 

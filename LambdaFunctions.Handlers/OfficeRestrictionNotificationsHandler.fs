@@ -1,6 +1,5 @@
 ﻿namespace LambdaFunctions
 
-open System
 open Amazon.Lambda.Core
 open System.Text.Json
 open LambdaFunctions.Facade
@@ -13,7 +12,7 @@ type OfficeRestrictionNotificationEvent =
 type OfficeRestrictionNotificationsHandler() =
     member _.Handle (event: JsonDocument) = task {
         let eventDeserialized = JsonSerializer.Deserialize<OfficeRestrictionNotificationEvent>(event)
-        let! officeId = Office.getOfficeById eventDeserialized.location HttpRequest.baseUrl
-        let! sendNotification = OfficeRestrictions.sendOfficeRestrictionsNotifications officeId HttpRequest.baseUrl
+        let! officeId = Office.getOfficeById eventDeserialized.location Constants.baseUrl
+        let! sendNotification = OfficeRestrictions.sendOfficeRestrictionsNotifications officeId Constants.baseUrl
         printfn $"Notification successfully sent for location {eventDeserialized.location} with OfficeId {officeId}"
     }
